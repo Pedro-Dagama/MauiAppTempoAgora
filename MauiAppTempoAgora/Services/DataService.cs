@@ -1,5 +1,6 @@
 ﻿using MauiAppTempoAgora.Models;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace MauiAppTempoAgora.Services
 {
@@ -15,6 +16,8 @@ namespace MauiAppTempoAgora.Services
 
             using (HttpClient client = new HttpClient())
             {
+
+                try { 
                 HttpResponseMessage resp = await client.GetAsync(url);
 
                 if (resp.IsSuccessStatusCode)
@@ -32,14 +35,29 @@ namespace MauiAppTempoAgora.Services
                         description = (string)rascunho["weather"][0]["description"],
                         main = (string)rascunho["weather"][0]["main"],
                         temp_min = (double?)rascunho["main"]["temp_min"],
-                        temp_max = (double?)rascunho["main"]["temp_max"],
+                        temp_max = (double?)rascunho["main"]["temp_max"],                   
                         speed = (double?)rascunho["wind"]["speed"],
                         visibility = (int?)rascunho["visibility"],
                         sunrise = sunrise.ToString(),
                         sunset = sunset.ToString(),
                     };
                 }
-
+                else if (resp.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // Cidade não encontrada
+                    throw new Exception("Cidade não encontrada. Verifique o nome digitado.");
+                }
+                else
+                {
+                    // Outros erros da API
+                    throw new Exception($"Erro ao buscar previsão: {resp.StatusCode}");
+                }
+                }
+                catch (HttpRequestException)
+                {
+                    // Sem internet ou problema de conexão
+                    throw new Exception("Sem conexão com a internet. Verifique sua rede e tente novamente.");
+                }
             }
 
             return t;
