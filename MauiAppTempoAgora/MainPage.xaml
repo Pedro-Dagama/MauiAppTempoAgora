@@ -6,9 +6,15 @@
     <ScrollView>
         <VerticalStackLayout
             >
+
+            <Button Text="Minha localização" Clicked="Button_Clicked_localizacao"/>
+            <Label x:Name="lbl_localizacao"/>
+
             <Entry x:Name="txt_cidade"/>
-            <Button Text="Buscar" Clicked="Button_Clickedd"/>
+            <Button Text="Buscar Previsão" Clicked="Button_Clicked_Previsao"/>
             <Label x:Name="lbl_res"/>
+
+            <WebView x:Name="wv_mapa" HeightRequest="500"/>
         </VerticalStackLayout>
     </ScrollView>
 
